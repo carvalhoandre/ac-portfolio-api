@@ -3,30 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AC Contato</title>
+    <title>Contato - AC Developer</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        padding: 20px;
+        font-family: 'Roboto', Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
       }
       .container {
         max-width: 600px;
-        margin: 0 auto;
-        background: #fff;
-        border: 1px solid #ddd;
-        padding: 20px;
+        margin: 20px auto;
+        background: #ffffff;
         border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #e5e5e5;
+      }
+      .header {
+        background-color: #262626;
+        color: #ffffff;
+        text-align: center;
+        padding: 20px 0;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .content {
+        padding: 20px;
+      }
+      .content h2 {
+        color: #171717;
+        font-size: 20px;
+        margin-top: 10px;
+      }
+      .content p {
+        color: #737373;
+        line-height: 1.6;
+        margin: 10px 0;
+      }
+      .footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .footer img {
+        max-width: 150px;
+      }
+      .footer p {
+        margin: 10px 0 0;
+        font-size: 12px;
+        color: #666666;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Olá, {{name}}!</h1>
-      <p>Muito obrigado por entrar em contato!</p>
-      <p>Assim que possível iremos conversar sobre:</p>
-      <h2>{{title}}</h2>
-      <p>{{message}}</p>
+      <div class="header">
+        <h1>Obrigado por entrar em contato, {{name}}!</h1>
+      </div>
+      <div class="content">
+        <p>Recebi sua mensagem e estou animado para conversar com você.</p>
+        <p>Abaixo estão os detalhes do que você nos enviou:</p>
+        <h2>Assunto: {{title}}</h2>
+        <p>{{message}}</p>
+      </div>
+      <div class="footer">
+        <p>&copy; 2024 AC Developer. Todos os direitos reservados.</p>
+        <p>
+          <a href="http://andrelcarvalho.netlify.app/" style="color: #5c67f2; text-decoration: none;">andrelcarvalho.netlify.app</a>
+        </p>
+      </div>
     </div>
   </body>
 </html>
