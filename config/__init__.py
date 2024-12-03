@@ -9,6 +9,6 @@ def create_app():
 
     CORS(app, resources={r"/*": {"origins": ["https://andrelcarvalho.netlify.app"]}})
 
-    app.register_blueprint(email_bp, url_prefix="/email")
+    app.register_blueprint(email_bp)
 
     return app
