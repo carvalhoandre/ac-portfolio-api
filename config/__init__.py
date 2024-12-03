@@ -7,7 +7,7 @@ def create_app():
 
     from resources.email_resource import email_bp
 
-    CORS(app, resources={r"/*": {"origins": ["https://andrelcarvalho.netlify.app"]}})
+    CORS(app, resources={r"/api/*": {"origins": "https://andrelcarvalho.netlify.app"}}, allow_headers=["Content-Type"], supports_credentials=True)
 
     app.register_blueprint(email_bp)
 

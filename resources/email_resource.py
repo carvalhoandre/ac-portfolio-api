@@ -7,6 +7,9 @@ email_service = EmailService()
 
 @email_bp.route('/email', methods=['POST', 'OPTIONS'])
 def send_email():
+    if request.method == 'OPTIONS':
+        return '', 200
+
     data = request.get_json()
     email = data.get('email')
     name = data.get('name')
