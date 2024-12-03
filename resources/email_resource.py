@@ -5,7 +5,7 @@ from utils.response_http_util import standard_response
 email_bp = Blueprint("email", __name__)
 email_service = EmailService()
 
-@email_bp.route('/send', methods=['POST'])
+@email_bp.route('/email', methods=['POST', 'OPTIONS'])
 def send_email():
     data = request.get_json()
     email = data.get('email')

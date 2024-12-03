@@ -6,7 +6,7 @@ load_dotenv()
 
 env = os.getenv('CORS_URL_ENV', 'http://localhost:8080')
 
-app = create_app(env)
+app = create_app()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
