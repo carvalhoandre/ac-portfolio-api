@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from services.email_service import EmailService
 from utils.response_http_util import standard_response
 
@@ -8,7 +8,11 @@ email_service = EmailService()
 @email_bp.route('/email', methods=['POST', 'OPTIONS'])
 def send_email():
     if request.method == 'OPTIONS':
-        return '', 200
+        response = jsonify({"message": "CORS preflight successful"})
+        response.headers.add("Access-Control-Allow-Origin", request.headers.get("Origin", "*"))
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
+        return response, 200
 
     data = request.get_json()
     email = data.get('email')

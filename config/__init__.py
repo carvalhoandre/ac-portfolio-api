@@ -1,3 +1,4 @@
+from os import getenv
 from flask import Flask
 from flask_cors import CORS
 
@@ -7,7 +8,11 @@ def create_app():
 
     from resources.email_resource import email_bp
 
-    CORS(app, resources={r"/api/*": {"origins": "https://andrelcarvalho.netlify.app"}}, allow_headers=["Content-Type"], supports_credentials=True)
+    cors_url = getenv('CORS_URL_ENV', 'http://localhost:8080')
+    CORS(app, resources={r"/*": {"origins": cors_url}},
+         methods=["GET", "POST", "OPTIONS"],
+         allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+         supports_credentials=True)
 
     app.register_blueprint(email_bp)
 
