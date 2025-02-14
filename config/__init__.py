@@ -8,8 +8,12 @@ def create_app():
 
     from resources.email_resource import email_bp
 
-    cors_url = getenv('CORS_URL_ENV', 'http://localhost:8080')
-    CORS(app, resources={r"/*": {"origins": cors_url}},
+    allowed_origins = [
+        "https://andrelcarvalho.netlify.app",
+        "https://andreleitecarvalho.space",
+    ]
+
+    CORS(app, resources={r"/*": {"origins": allowed_origins}},
          methods=["GET", "POST", "OPTIONS"],
          allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
          supports_credentials=True)
