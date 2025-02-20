@@ -4,8 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-env = os.getenv('CORS_URL_ENV', 'http://localhost:8080')
-
 app = create_app()
 
 if __name__ == "__main__":
