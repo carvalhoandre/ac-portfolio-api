@@ -9,6 +9,7 @@ def create_app():
     from resources.email_resource import email_bp
 
     allowed_origins = [
+        "http://localhost:8080",
         "https://www.andreleitecarvalho.space",
         "https://andrelcarvalho.netlify.app"
     ]
