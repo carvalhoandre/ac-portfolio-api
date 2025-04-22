@@ -66,5 +66,5 @@ def send_confirmation_email(to_email, name, message, title):
         "title": title,
     }
     html_content = load_email_template('confirmation_email_template.html', replacements)
-    send_email(to_email, subject="AC Contato", html_content)
+    send_email(to_email=to_email, subject="AC Contato", html_content=html_content)
     
