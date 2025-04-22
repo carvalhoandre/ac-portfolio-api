@@ -58,11 +58,13 @@ def send_email(to_email, subject, html_content):
         raise Exception(f"Failed to send email: {e}")
 
 
-def send_confirmation_email(to_email, subject, confirmation_code, name):
+def send_confirmation_email(to_email, name, message, title):
     replacements = {
+        "to_email": to_email,
         "name": name,
-        "confirmation_code": confirmation_code
+        "message": message,
+        "title": title,
     }
     html_content = load_email_template('confirmation_email_template.html', replacements)
-    send_email(to_email, subject, html_content)
+    send_email(to_email, subject="AC Contato", html_content)
     
