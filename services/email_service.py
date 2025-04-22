@@ -1,66 +1,68 @@
 import os
 import smtplib
-import logging
-
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+def load_email_template(template_name, replacements):
+    template_path = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        'templates',
+        template_name
+    )
 
-class EmailService:
-    @staticmethod
-    def send_confirmation_email(to_email: str, name: str, message: str, title: str = None) -> None:
-        smtp_server = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
-        smtp_port = int(os.getenv('SMTP_PORT', '465'))
-        sender_email = os.getenv('SMTP_EMAIL', '')
-        sender_password = os.getenv('SMTP_PASSWORD', '')
+    try:
+        with open(template_path, "r") as file:
+            html_content = file.read()
 
-        if not sender_email or not sender_password:
-            logger.error("Sender email or password is not set in environment variables")
-            return
+        for placeholder, value in replacements.items():
+            html_content = html_content.replace(f"{{{{{placeholder}}}}}", value)
 
-        template_path = os.path.join(
-            os.path.abspath(os.path.dirname(__file__)),
-            'templates',
-            'confirmation_email_template.html'
-        )
+        return html_content
+    except FileNotFoundError:
+        raise Exception(f"Template file {template_name} not found.")
 
-        try:
-            with open(template_path, "r") as file:
-                html_content = file.read()
-        except Exception as e:
-            logger.error(f"Failed to read email template: {e}")
-            return
 
-        html_content = html_content.replace("{{name}}", name)
-        html_content = html_content.replace("{{title}}", title if title else "AC Contato")
-        html_content = html_content.replace("{{message}}", message)
+def send_email(to_email, subject, html_content):
+    # Get SMTP configuration from environment variables with defaults
+    smtp_server = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
+    smtp_port = int(os.getenv('SMTP_PORT', '465'))
+    smtp_use_tls = os.getenv('SMTP_USE_TLS', 'false').lower() == 'true'
+    sender_email = os.getenv('SMTP_EMAIL', '')
+    sender_password = os.getenv('SMTP_PASSWORD', '')
+    sender_name = os.getenv('SMTP_SENDER_NAME', 'WhatsTime')
 
-        plain_text = f"Olá {name},\n\n{message}\n\nAtenciosamente,\nEquipe AC Contato"
+    if not sender_email or not sender_password:
+        raise Exception("SMTP credentials are not set in environment variables.")
 
-        msg = MIMEMultipart("alternative")
-        subject = title if title else "AC Contato"
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = f"{sender_name} <{sender_email}>"
+    msg["To"] = to_email
+    msg.attach(MIMEText(html_content, "html"))
 
-        msg["Subject"] = subject
-        msg["From"] = sender_email
-        msg["To"] = to_email
-        msg["Reply-To"] = sender_email
-        msg["X-Mailer"] = "Python EmailService"
+    try:
+        if smtp_use_tls:
+            # Use TLS connection
+            server = smtplib.SMTP(smtp_server, smtp_port)
+            server.starttls()
+        else:
+            # Use SSL connection
+            server = smtplib.SMTP_SSL(smtp_server, smtp_port)
+        
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, to_email, msg.as_string())
+        server.quit()
+        print(f"Email sent successfully to {to_email}")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+        raise Exception(f"Failed to send email: {e}")
 
-        part1 = MIMEText(plain_text, "plain")
-        part2 = MIMEText(html_content, "html")
-        msg.attach(part1)
-        msg.attach(part2)
 
-        try:
-            with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
-                server.ehlo()
-                server.login(sender_email, sender_password)
-                server.sendmail(sender_email, to_email, msg.as_string())
-                server.close()
-            logger.info(f"HTML email sent successfully to {to_email}")
-        except smtplib.SMTPException as smtp_error:
-            logger.error(f"SMTP error occurred: {smtp_error}")
-        except Exception as e:
-            logger.error(f"Failed to send email: {e}")
+def send_confirmation_email(to_email, subject, confirmation_code, name):
+    replacements = {
+        "name": name,
+        "confirmation_code": confirmation_code
+    }
+    html_content = load_email_template('confirmation_email_template.html', replacements)
+    send_email(to_email, subject, html_content)
+    
